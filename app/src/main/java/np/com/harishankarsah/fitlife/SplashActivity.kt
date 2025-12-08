@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import np.com.harishankarsah.fitlife.ui.screen.signup.ui.theme.FitLifeTheme
+import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
 
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

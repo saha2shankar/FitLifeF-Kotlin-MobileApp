@@ -1,5 +1,6 @@
 package np.com.harishankarsah.fitlife.ui.screen.signup
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,7 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import np.com.harishankarsah.fitlife.ui.screen.signup.ui.theme.FitLifeTheme
+import np.com.harishankarsah.fitlife.ui.screen.forgot.ForgotActivity
+import np.com.harishankarsah.fitlife.ui.screen.login.LoginActivity
+import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
 
 class SignupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +22,16 @@ class SignupActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FitLifeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+               SignupScreen(
+                   onSignInClicked = {
+                       openSignInActivity()
+                   },
+               )
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FitLifeTheme {
-        Greeting("Android")
+    fun openSignInActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
     }
 }

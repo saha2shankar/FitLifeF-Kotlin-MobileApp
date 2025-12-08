@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitLife">
         <activity
+            android:name=".ui.screen.forgot.ForgotActivity"
+            android:exported="false"
+            android:label="@string/title_activity_forgot"
+            android:theme="@style/Theme.FitLife" />
+        <activity
             android:name=".ui.screen.signup.SignupActivity"
             android:exported="false"
             android:label="@string/title_activity_signup"
