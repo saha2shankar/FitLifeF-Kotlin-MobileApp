@@ -1,4 +1,4 @@
-package np.com.harishankarsah.fitlife.ui.screen.login
+package np.com.harishankarsah.fitlife.ui.screen.forgot
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,34 +12,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import np.com.harishankarsah.fitlife.ui.screen.forgot.ForgotActivity
-import np.com.harishankarsah.fitlife.ui.screen.signup.SignupActivity
+import np.com.harishankarsah.fitlife.ui.screen.login.LoginActivity
 import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
 
-class LoginActivity : ComponentActivity() {
+class ForgotActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FitLifeTheme {
-                LoginScreen(
-                    onForgotPasswordClicked = {
-                        openForgotActivity()
-                    },
-                    onSignUpClicked = {
-                        openSignUpActivity()
-                    },
-                )
-            }
+            ForgotScreen(
+                onSignInClicked = {
+                    openSignInActivity()
+                },
+            )
         }
     }
 
-    fun openSignUpActivity() {
-        val intent = Intent(this, SignupActivity::class.java)
-        startActivity(intent)
-        finish()
     }
-    fun openForgotActivity() {
-        val intent = Intent(this, ForgotActivity::class.java)
+    fun openSignInActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
 }

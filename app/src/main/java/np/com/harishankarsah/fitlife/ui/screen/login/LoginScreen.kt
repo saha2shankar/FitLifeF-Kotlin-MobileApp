@@ -25,22 +25,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import np.com.harishankarsah.fitlife.R
 import np.com.harishankarsah.fitlife.ui.components.ButtonType
 import np.com.harishankarsah.fitlife.ui.components.GlobalButton
+import np.com.harishankarsah.fitlife.ui.components.GlobalTextButton
 import np.com.harishankarsah.fitlife.ui.components.GlobalTextField
+import np.com.harishankarsah.fitlife.ui.components.TextButtonType
 import np.com.harishankarsah.fitlife.ui.theme.OnPrimary
 import np.com.harishankarsah.fitlife.ui.utils.Size
 import np.com.harishankarsah.fitlife.ui.utils.Validation
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit,
+) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val usernameFocus = remember { FocusRequester() }
+    val passwordFocus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,6 +89,7 @@ fun LoginScreen() {
             error = Validation.validateName(username),
             label = "Username",
             placeholder = "Enter your username",
+            modifier = Modifier.focusRequester(usernameFocus),
             leadingIcon = {
                 Icon(
                     Icons.Filled.Person,
@@ -86,7 +98,7 @@ fun LoginScreen() {
                 )
             }
         )
-        Spacer(modifier = Modifier.height(Size.md))
+        Spacer(modifier = Modifier.height(Size.md) )
 
         // Password Field
         GlobalTextField(
@@ -94,8 +106,10 @@ fun LoginScreen() {
             onValueChange = { password = it },
             label = "Password",
             placeholder = "Enter your password",
+            isRequired = true,
             isPassword = true,
             error = Validation.validatePassword(password),
+            modifier = Modifier.focusRequester(passwordFocus),
             leadingIcon = {
                 Icon(
                     Icons.Filled.Lock,
@@ -109,9 +123,18 @@ fun LoginScreen() {
 
         // LOGIN BUTTON (only active if valid)
         GlobalButton(
-            text = "Login",
-            onClick = {
+            text = "Login",onClick = {
+                val usernameError = Validation.validateName(username)
+                val passwordError = Validation.validatePassword(password)
 
+                if (usernameError == null && passwordError == null) {
+                    // Validation passed → print values
+                    println("Username: $username")
+                    println("Password: $password")
+                } else {
+                    // Validation failed → just recompose (errors already shown)
+                    println("Validation failed!")
+                }
             },
             buttonType = ButtonType.PRIMARY
         )
@@ -128,7 +151,7 @@ fun LoginScreen() {
                 style = MaterialTheme.typography.titleSmall,
                 color = OnPrimary,
                 modifier = Modifier.clickable() {
-                    // Navigate to Register Screen
+                    onSignUpClicked()
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -141,17 +164,15 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = "Forgot your password?",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    // Navigate to Reset Password Screen
-                }
+            GlobalTextButton(
+                text = "Forgot Password?",
+                onClick = {
+                    onForgotPasswordClicked()
+                },
+                buttonType = TextButtonType.PRIMARY
             )
+
         }
-
-
 
     }
 }
