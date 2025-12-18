@@ -11,12 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.graphics.vector.ImageVector
+import np.com.harishankarsah.fitlife.ui.theme.Info
 import np.com.harishankarsah.fitlife.ui.theme.Primary
 import np.com.harishankarsah.fitlife.ui.theme.OnPrimary
 import np.com.harishankarsah.fitlife.ui.theme.Secondary
 
 enum class IconButtonType {
-    PRIMARY, SECONDARY, TRANSPARENT
+    PRIMARY, SECONDARY, TRANSPARENT, INFO
 }
 
 @Composable
@@ -31,6 +32,7 @@ fun GlobalIconButton(
     val backgroundColor = when (buttonType) {
         IconButtonType.PRIMARY -> Primary
         IconButtonType.SECONDARY -> Secondary
+        IconButtonType.INFO -> Info
         IconButtonType.TRANSPARENT -> Color.Transparent
     }
 

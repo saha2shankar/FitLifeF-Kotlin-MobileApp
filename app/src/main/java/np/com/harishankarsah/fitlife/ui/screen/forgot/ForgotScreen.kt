@@ -43,6 +43,7 @@ import np.com.harishankarsah.fitlife.ui.utils.Validation
 @Composable
 fun ForgotScreen(
     onSignInClicked: () -> Unit,
+    onSendResetClicked: (String) -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     Column(
@@ -98,7 +99,10 @@ fun ForgotScreen(
         GlobalButton(
             text = "Send",
             onClick = {
-
+                val emailError = Validation.validateEmail(email)
+                if (emailError == null && email.isNotEmpty()) {
+                    onSendResetClicked(email)
+                }
             },
             buttonType = ButtonType.PRIMARY
         )

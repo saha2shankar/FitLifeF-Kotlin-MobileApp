@@ -3,6 +3,7 @@
 
     <!-- Light Theme -->
     <style name="Theme.FitLife" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent" >true</item>
         <!-- Primary Colors -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>

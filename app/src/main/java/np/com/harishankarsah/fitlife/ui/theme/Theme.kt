@@ -1,9 +1,10 @@
 package np.com.harishankarsah.fitlife.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialog
 
 // Light Color Scheme
 private val LightColorScheme = lightColorScheme(
@@ -37,7 +38,7 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun FitLifeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(), // Automatically switch based on system
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -45,7 +46,11 @@ fun FitLifeTheme(
     MaterialTheme(
         colorScheme = colors,
         typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+        shapes = Shapes
+    ) {
+        Box {
+            content()       // <- main UI
+            GlobalDialog()  // <- always on top
+        }
+    }
 }
