@@ -28,6 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,7 +50,9 @@ import np.com.harishankarsah.fitlife.ui.utils.Validation
 
 @Composable
 fun SignupScreen(
+    modifier: Modifier= Modifier,
     onSignInClicked: () -> Unit,
+    onSignupClicked: (String, String, String, String) -> Unit,
 
     ) {
     var full_name by remember { mutableStateOf("") }
@@ -55,10 +60,42 @@ fun SignupScreen(
     var email by remember { mutableStateOf("") }
     var cpassword by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isSubmitted by remember { mutableStateOf(false) }
+    val fullNameFocus = remember { FocusRequester() }
+    val mobileFocus = remember { FocusRequester() }
+    val emailFocus = remember { FocusRequester() }
+    val passwordFocus = remember { FocusRequester() }
+    val cPasswordFocus = remember { FocusRequester() }
+
+    val focusManager = LocalFocusManager.current
+
+    val fullNameError =
+        if (isSubmitted && full_name.isBlank()) "Full name is required"
+        else null
+
+    val mobileError =
+        if (isSubmitted && mobile_number.isBlank()) "Mobile number is required"
+        else Validation.validatePhone(mobile_number)
+
+    val emailError =
+        if (isSubmitted && email.isBlank()) "Email is required"
+        else Validation.validateEmail(email)
+
+    val passwordError =
+        if (isSubmitted && password.isBlank()) "Password is required"
+        else Validation.validatePassword(password)
+
+    val confirmPasswordError =
+        if (isSubmitted && cpassword.isBlank()) "Confirm password is required"
+        else if (isSubmitted && password != cpassword) "Passwords do not match"
+        else null
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(Size.xxl))
         Text(
@@ -80,7 +117,8 @@ fun SignupScreen(
             value = full_name,
             isRequired = true,
             onValueChange = { full_name = it },
-            error = Validation.validateName(full_name),
+            error = fullNameError,
+            modifier = Modifier.focusRequester(fullNameFocus),
             label = "Full Name",
             placeholder = "Enter your full name",
             leadingIcon = {
@@ -96,7 +134,8 @@ fun SignupScreen(
             value = email,
             isRequired = true,
             onValueChange = { email = it },
-            error = Validation.validateEmail(email),
+            error = emailError,
+            modifier = Modifier.focusRequester(emailFocus),
             label = "Email",
             placeholder = "Enter your email",
             keyboardOptions = KeyboardOptions(
@@ -115,7 +154,8 @@ fun SignupScreen(
             value = mobile_number,
             isRequired = true,
             onValueChange = { mobile_number = it },
-            error = Validation.validatePhone(mobile_number),
+            error = mobileError,
+            modifier = Modifier.focusRequester(mobileFocus),
             label = "Mobile Number",
             placeholder = "Enter your mobile number",
             minLines = 9,
@@ -140,7 +180,8 @@ fun SignupScreen(
             label = "Password",
             placeholder = "Enter your password",
             isPassword = true,
-            error = Validation.validatePassword(password),
+            error = passwordError,
+            modifier = Modifier.focusRequester(passwordFocus),
             leadingIcon = {
                 Icon(
                     Icons.Filled.Lock,
@@ -158,7 +199,9 @@ fun SignupScreen(
             label = "Confirm Password",
             placeholder = "Enter confirm password",
             isPassword = true,
-            error = Validation.validatePassword(cpassword),
+            error = confirmPasswordError,
+            modifier = Modifier.focusRequester(cPasswordFocus),
+
             leadingIcon = {
                 Icon(
                     Icons.Filled.Lock,
@@ -170,14 +213,52 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(Size.lg))
 
-        // LOGIN BUTTON (only active if valid)
         GlobalButton(
-            text = "Signup",
+            text = "Create Account",
             onClick = {
+                isSubmitted = true
+                focusManager.clearFocus()
 
+                when {
+                    full_name.isBlank() -> {
+                        fullNameFocus.requestFocus()
+                    }
+
+                    mobile_number.isBlank() -> {
+                        mobileFocus.requestFocus()
+                    }
+
+                    email.isBlank() -> {
+                        emailFocus.requestFocus()
+                    }
+
+                    password.isBlank() -> {
+                        passwordFocus.requestFocus()
+                    }
+
+                    cpassword.isBlank() -> {
+                        cPasswordFocus.requestFocus()
+                    }
+
+                    fullNameError == null &&
+                            mobileError == null &&
+                            emailError == null &&
+                            passwordError == null &&
+                            confirmPasswordError == null -> {
+
+                        // ✅ SUBMIT ONLY WHEN EVERYTHING IS VALID
+                        onSignupClicked(
+                            full_name.trim(),
+                            email.trim(),
+                            mobile_number.trim(),
+                            password
+                        )
+                    }
+                }
             },
             buttonType = ButtonType.PRIMARY
         )
+
 
         Spacer(modifier = Modifier.height(Size.lg))
 

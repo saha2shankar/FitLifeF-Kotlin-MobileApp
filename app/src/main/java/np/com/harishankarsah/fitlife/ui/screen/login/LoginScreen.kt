@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,15 +45,28 @@ import np.com.harishankarsah.fitlife.ui.utils.Validation
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier= Modifier,
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onLoginClicked: (String, String) -> Unit,
 ) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val usernameFocus = remember { FocusRequester() }
     val passwordFocus = remember { FocusRequester() }
+    var isSubmitted by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    val usernameError =
+        if (isSubmitted && username.isBlank()) "Username is required"
+        else Validation.validateEmail(username)
+
+    val passwordError =
+        if (isSubmitted && password.isBlank()) "Password is required"
+        else Validation.validatePassword(password)
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +101,7 @@ fun LoginScreen(
             value = username,
             isRequired = true,
             onValueChange = { username = it },
-            error = Validation.validateName(username),
+            error = usernameError,
             label = "Username",
             placeholder = "Enter your username",
             modifier = Modifier.focusRequester(usernameFocus),
@@ -108,7 +123,7 @@ fun LoginScreen(
             placeholder = "Enter your password",
             isRequired = true,
             isPassword = true,
-            error = Validation.validatePassword(password),
+            error = passwordError,
             modifier = Modifier.focusRequester(passwordFocus),
             leadingIcon = {
                 Icon(
@@ -123,21 +138,28 @@ fun LoginScreen(
 
         // LOGIN BUTTON (only active if valid)
         GlobalButton(
-            text = "Login",onClick = {
-                val usernameError = Validation.validateName(username)
-                val passwordError = Validation.validatePassword(password)
+            text = "Login",
+            onClick = {
+                isSubmitted = true
+                focusManager.clearFocus()
 
-                if (usernameError == null && passwordError == null) {
-                    // Validation passed → print values
-                    println("Username: $username")
-                    println("Password: $password")
-                } else {
-                    // Validation failed → just recompose (errors already shown)
-                    println("Validation failed!")
+                when {
+                    username.isBlank() -> {
+                        usernameFocus.requestFocus()
+                    }
+
+                    password.isBlank() -> {
+                        passwordFocus.requestFocus()
+                    }
+
+                    usernameError == null && passwordError == null -> {
+                        onLoginClicked(username.trim(), password)
+                    }
                 }
             },
             buttonType = ButtonType.PRIMARY
         )
+
 
         Spacer(modifier = Modifier.height(Size.lg))
 

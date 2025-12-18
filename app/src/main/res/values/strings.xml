@@ -4,4 +4,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="title_activity_forgot">ForgotActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="google_maps_key" translatable="false">
+        Your API KEY
+    </string>
 </resources>

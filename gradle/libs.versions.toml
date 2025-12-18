@@ -11,6 +11,23 @@ lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.0"
 composeBom = "2024.09.00"
 material3 = "1.4.0"
+navigationCompose = "2.8.4"
+materialIconsExtended ="1.5.4"
+materialIconsCore = "1.5.4"
+googleGmsGoogleServices = "4.4.4"
+firebaseAuth = "24.0.1"
+firebaseFirestore = "25.1.0"
+firebaseDatabase = "22.0.1"
+coilCompose ="2.5.0"
+foundation="1.6.0"
+animation ="1.6.0"
+mapsCompose="2.13.0"
+playServicesMaps="18.1.0"
+accompanistPermissions="0.32.0"
+roomKtx = "2.8.4"
+playServicesLocation="21.0.1"
+accompanistSwiperefresh="0.32.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,13 +43,29 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+material-icons-core ={group = "androidx.compose.material", name="material-icons-core", version.ref="materialIconsCore"}
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-
+navigation-compose  = {group = "androidx.navigation", name= "navigation-compose", version.ref = "navigationCompose"}
+material-icons-extended ={group="androidx.compose.material", name="material-icons-extended",version.ref="materialIconsExtended"}
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestore" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+coil-compose = {group="io.coil-kt", name="coil-compose",version.ref="coilCompose"}
+foundation = {group="androidx.compose.foundation", name="foundation",version.ref="foundation"}
+animation = {group="androidx.compose.animation", name="animation",version.ref="animation"}
+maps-compose = {group="com.google.maps.android",name="maps-compose",version.ref="mapsCompose"}
+play-services-maps = {group="com.google.android.gms",name="play-services-maps",version.ref="playServicesMaps"}
+accompanist-permissions = {group="com.google.accompanist",name="accompanist-permissions",version.ref="accompanistPermissions"}
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+play-services-location ={group="com.google.android.gms", name="play-services-location", version.ref="playServicesLocation"}
+accompanist-swiperefresh={group="com.google.accompanist", name="accompanist-swiperefresh", version.ref="accompanistSwiperefresh"}
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 
