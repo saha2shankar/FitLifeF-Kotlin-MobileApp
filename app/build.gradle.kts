@@ -76,6 +76,10 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.play.services.location)
     implementation(libs.accompanist.swiperefresh)
+    implementation(libs.google.maps.compose)
+    implementation(libs.google.maps.utils)
+    implementation(libs.gson)
+
 
 
 

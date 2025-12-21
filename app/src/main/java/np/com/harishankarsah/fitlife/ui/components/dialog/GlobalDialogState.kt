@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 object GlobalDialogState {
     val dialog = mutableStateOf<DialogType>(DialogType.None)
 
+
     fun dismiss() {
         dialog.value = DialogType.None
     }
@@ -31,5 +32,17 @@ object GlobalDialogState {
 
     fun showInfo(msg: String) {
         dialog.value = DialogType.Info(msg)
+    }
+
+    fun showMultiField(
+        title: String,
+        fields: List<DialogField>,
+        confirmText: String = "Submit",
+        cancelText: String = "Cancel",
+        onConfirm: (Map<String, Any?>) -> Unit
+    ) {
+        dialog.value = DialogType.MultiField(
+            title, fields, confirmText, cancelText, onConfirm
+        )
     }
 }

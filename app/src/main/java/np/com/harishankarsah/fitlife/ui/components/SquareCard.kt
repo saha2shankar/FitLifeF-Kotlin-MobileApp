@@ -131,12 +131,3 @@ enum class SquareCardVariant {
     Filled,
     Outlined
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    FitLifeTheme {
-        SquareCardGrid(
-        )
-    }
-}
