@@ -10,9 +10,14 @@ val navigationItems = listOf(
         route = Screen.Home.rout
     ),
     NavigationItem(
-        title = "Workout",
+        title = "Exercise",
         icon = R.drawable.ic_workout,
         route = Screen.Workout.rout
+    ),
+    NavigationItem(
+        title = "Weekly Schedule",
+        icon = R.drawable.ic_week,
+        route = Screen.WeekSchedule.rout
     ),
     NavigationItem(
         title = "Map",

@@ -27,6 +27,9 @@ accompanistPermissions="0.32.0"
 roomKtx = "2.8.4"
 playServicesLocation="21.0.1"
 accompanistSwiperefresh="0.32.0"
+googleMapsCompose="4.3.3"
+googleMapsUtils="5.0.0"
+gson="2.10.1"
 
 
 [libraries]
@@ -63,6 +66,10 @@ accompanist-permissions = {group="com.google.accompanist",name="accompanist-perm
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 play-services-location ={group="com.google.android.gms", name="play-services-location", version.ref="playServicesLocation"}
 accompanist-swiperefresh={group="com.google.accompanist", name="accompanist-swiperefresh", version.ref="accompanistSwiperefresh"}
+google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref="googleMapsCompose" }
+google-maps-utils = { group = "com.google.maps.android", name = "maps-utils-ktx", version.ref="googleMapsUtils" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

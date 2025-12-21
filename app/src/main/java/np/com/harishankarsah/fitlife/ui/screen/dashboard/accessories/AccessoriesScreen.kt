@@ -1,5 +1,6 @@
 package np.com.harishankarsah.fitlife.ui.screen.dashboard.accessories
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,26 +51,26 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
+import np.com.harishankarsah.fitlife.ui.screen.dashboard.DashboardActivity
 
 
 @Composable
-fun AccessoriesScreen() {
+fun AccessoriesScreen(
+    onBackclick: () -> Unit
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
     ) {
-        Spacer(modifier = Modifier.height(Size.sm))
+        Spacer(modifier = Modifier.height(50.dp))
         GlobalIconButton(
             icon = Icons.Default.ArrowBackIos,
             contentDescription = "Back",
-            onClick = { },
+            onClick = { onBackclick() },
             buttonType = IconButtonType.PRIMARY
         )
         Spacer(modifier = Modifier.height(Size.lg))
-
-
             Text(
                 text = "Accessories Items",
                 style = MaterialTheme.typography.headlineLarge,

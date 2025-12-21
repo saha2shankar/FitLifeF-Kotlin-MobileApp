@@ -11,5 +11,13 @@ sealed class DialogType {
     data class Success(val message: String) : DialogType()
     data class Error(val message: String) : DialogType()
     data class Info(val message: String) : DialogType()
+    data class MultiField(
+        val title: String,
+        val fields: List<DialogField>,
+        val confirmText: String = "Submit",
+        val cancelText: String = "Cancel",
+        val onConfirm: (Map<String, Any?>) -> Unit
+    ) : DialogType()
+
     object None : DialogType()
 }

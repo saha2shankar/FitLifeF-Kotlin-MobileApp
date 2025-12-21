@@ -5,7 +5,11 @@
     <string name="title_activity_signup">SignupActivity</string>
     <string name="title_activity_forgot">ForgotActivity</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_accessories">AccessoriesActivity</string>
     <string name="google_maps_key" translatable="false">
-        Your API KEY
+        YOUR_API_KEY
     </string>
+    <string name="title_activity_week_plan">WeekPlanActivity</string>
+    <string name="title_activity_create_exercise">CreateExerciseActivity</string>
+    <string name="title_activity_expense">ExpenseActivity</string>
 </resources>

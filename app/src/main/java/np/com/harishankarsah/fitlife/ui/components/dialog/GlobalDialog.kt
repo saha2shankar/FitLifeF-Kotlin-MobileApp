@@ -19,7 +19,7 @@ import np.com.harishankarsah.fitlife.ui.theme.*
 fun GlobalDialog() {
     val dialogState = GlobalDialogState.dialog.value
 
-    if (dialogState is DialogType.None) return
+    if (dialogState is DialogType.None || dialogState is DialogType.MultiField) return
 
     AlertDialog(
         onDismissRequest = { GlobalDialogState.dismiss() },
