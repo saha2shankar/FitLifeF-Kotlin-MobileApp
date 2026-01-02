@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,6 +40,11 @@ import np.com.harishankarsah.fitlife.ui.components.GlobalButton
 import np.com.harishankarsah.fitlife.ui.components.GlobalIconButton
 import np.com.harishankarsah.fitlife.ui.components.GlobalTextField
 import np.com.harishankarsah.fitlife.ui.components.IconButtonType
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationBottomSheet
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationType
+import np.com.harishankarsah.fitlife.model.ExerciseModel
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.platform.LocalContext
 import np.com.harishankarsah.fitlife.ui.components.SquareCard
 import np.com.harishankarsah.fitlife.ui.components.SquareCardVariant
 import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
@@ -58,6 +64,19 @@ import np.com.harishankarsah.fitlife.ui.screen.dashboard.DashboardActivity
 fun AccessoriesScreen(
     onBackclick: () -> Unit
     ) {
+    val context = LocalContext.current
+    var showShareBottomSheet by remember { mutableStateOf(false) }
+    
+    // Extract equipment list from accessories
+    val equipmentList = remember {
+        listOf(
+            "Dumbbell", "Kettlebell", "Yoga Mat", "Resistance Band",
+            "Jump Rope", "Medicine Ball", "Pull-up Bar", "Foam Roller",
+            "Gym Gloves", "Ab Wheel", "Exercise Ball", "Weight Plates",
+            "Treadmill", "Elliptical", "Stationary Bike", "Stepper"
+        )
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,25 +89,51 @@ fun AccessoriesScreen(
             onClick = { onBackclick() },
             buttonType = IconButtonType.PRIMARY
         )
-        Spacer(modifier = Modifier.height(Size.lg))
+        Spacer(modifier = Modifier.height(Size.md))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = "Accessories Items",
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-            Spacer(modifier = Modifier.height(Size.md))
-
+            IconButton(onClick = { showShareBottomSheet = true }) {
+                Icon(
+                    Icons.Default.Share,
+                    contentDescription = "Share / Delegate",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+            Spacer(modifier = Modifier.height(Size.sm))
             // Description
             Text(
                 text = "Explore these essential accessories to help you improve your workouts and fitness goals.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
-
         Spacer(modifier = Modifier.height(Size.md))
-
         AccessoriesCardItems()
+        Spacer(modifier = Modifier.height(Size.xxl))
+        Spacer(modifier = Modifier.height(Size.xxl))
+
+
+    }
+
+    // Share Delegation Bottom Sheet
+    if (showShareBottomSheet) {
+        val dummyExercise = ExerciseModel(
+            routineName = "Accessories List",
+            equipment = equipmentList,
+            instructions = "Check out these accessories!"
+        )
+        ShareDelegationBottomSheet(
+            exercise = dummyExercise,
+            onDismissRequest = { showShareBottomSheet = false }
+        )
     }
 }
 
@@ -130,4 +175,5 @@ fun AccessoriesCardItems() {
             )
         }
     }
+
 }

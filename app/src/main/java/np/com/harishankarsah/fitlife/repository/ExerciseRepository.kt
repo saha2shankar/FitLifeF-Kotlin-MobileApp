@@ -131,4 +131,57 @@ class ExerciseRepository {
             }
         awaitClose { listener.remove() }
     }
+
+    suspend fun seedDefaultExercises(): Result<Unit> {
+        return try {
+            val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
+            
+            val snapshot = collection.whereEqualTo("userId", userId).limit(1).get().await()
+            if (!snapshot.isEmpty) {
+                return Result.success(Unit) // Already has exercises
+            }
+
+            val batch = db.batch()
+            
+            val defaults = listOf(
+                ExerciseModel(
+                    userId = userId,
+                    routineName = "Full-Body Strength Training",
+                    instructions = "Perform 3 sets of 12 reps for each exercise. Rest 60s between sets.",
+                    exercises = listOf("Squats", "Push-ups", "Lunges", "Plank", "Dumbbell Rows"),
+                    equipment = listOf("Dumbbells", "Mat"),
+                    imageUrl ="https://youfit.com/wp-content/uploads/2023/06/full-body-strength.jpg",
+                    createdAt = System.currentTimeMillis()
+                ),
+                ExerciseModel(
+                    userId = userId,
+                    routineName = "HIIT Cardio",
+                    instructions = "40 seconds work, 20 seconds rest. Repeat circuit 4 times.",
+                    exercises = listOf("Jumping Jacks", "Burpees", "Mountain Climbers", "High Knees"),
+                    equipment = listOf("None"),
+                    imageUrl ="https://images.pexels.com/photos/20901484/pexels-photo-20901484.jpeg?_gl=1*1gee8oi*_ga*MTcxOTI5MTcwNS4xNzY2Nzg3MDU0*_ga_8JE65Q40S6*czE3NjY3ODcwNTMkbzEkZzEkdDE3NjY3ODcwNjEkajUyJGwwJGgw",
+                    createdAt = System.currentTimeMillis()
+                ),
+                ExerciseModel(
+                    userId = userId,
+                    routineName = "Morning Yoga Flow",
+                    instructions = "Hold each pose for 5-10 breaths. Focus on deep breathing.",
+                    exercises = listOf("Child's Pose", "Cat-Cow", "Downward Dog", "Warrior I", "Warrior II"),
+                    equipment = listOf("Yoga Mat"),
+                    imageUrl ="https://theyogahub.ie/wp-content/uploads/2017/11/Yoga-shutterstock_126464135.jpg",
+                    createdAt = System.currentTimeMillis()
+                )
+            )
+
+            defaults.forEach { exercise ->
+                val docRef = collection.document()
+                batch.set(docRef, exercise.copy(id = docRef.id))
+            }
+
+            batch.commit().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

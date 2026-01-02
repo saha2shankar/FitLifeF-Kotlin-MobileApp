@@ -69,7 +69,7 @@ fun CreateExerciseScreen(
         Spacer(modifier = Modifier.height(Size.lg))
 
         Text(
-            text = if (viewModel.isEditMode) "Edit Exercise" else "Create Exercise",
+            text = if (viewModel.isEditMode) "Edit Workout" else "Create Workout",
             style = MaterialTheme.typography.headlineLarge,
             color = OnPrimary
         )
@@ -173,6 +173,8 @@ fun CreateExerciseScreen(
                 },
                 buttonType = ButtonType.PRIMARY
             )
+            Spacer(modifier = Modifier.height(100.dp))
+
         }
     }
 }

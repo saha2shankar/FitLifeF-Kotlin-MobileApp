@@ -3,6 +3,7 @@ package np.com.harishankarsah.fitlife.ui.screen.dashboard.week_plan
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,11 +24,15 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.graphics.RectangleShape
 import np.com.harishankarsah.fitlife.ui.components.GlobalButton
 import np.com.harishankarsah.fitlife.ui.components.GlobalIconButton
 import np.com.harishankarsah.fitlife.ui.components.IconButtonType
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationBottomSheet
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationType
+import np.com.harishankarsah.fitlife.utils.SmsDelegationHelper
 import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialog
 import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialogState
 import np.com.harishankarsah.fitlife.ui.components.location.GlobalMapView
@@ -40,6 +45,7 @@ import np.com.harishankarsah.fitlife.viewmodel.WeeklyPlanDetailViewModel
 import np.com.harishankarsah.fitlife.ui.theme.Success
 import np.com.harishankarsah.fitlife.ui.theme.Surface
 import np.com.harishankarsah.fitlife.ui.utils.Size
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun WeeklyPlanDetailScreen(
@@ -48,6 +54,8 @@ fun WeeklyPlanDetailScreen(
     viewModel: WeeklyPlanDetailViewModel = viewModel()
 ) {
     val state = viewModel.state
+    val context = LocalContext.current
+    var showShareBottomSheet by remember { mutableStateOf(false) }
 
     // Register Global Dialog
     GlobalDialog()
@@ -56,7 +64,7 @@ fun WeeklyPlanDetailScreen(
         viewModel.loadPlan(planId)
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         GlobalIconButton(
             icon = Icons.Default.ArrowBackIos,
             contentDescription = "Back",
@@ -78,21 +86,34 @@ fun WeeklyPlanDetailScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
             if (state.plan != null) {
-                IconButton(onClick = {
-                    GlobalDialogState.showConfirmation(
-                        title = "Delete Plan",
-                        message = "Are you sure you want to delete this plan?",
-                        onConfirm = {
-                            viewModel.deletePlan(onSuccess = onBack)
-                        }
-                    )
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
-                        tint = MaterialTheme.colorScheme.error
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { showShareBottomSheet = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share / Delegate",
+                            tint = Primary
+                        )
+                    }
+                    IconButton(onClick = {
+                        GlobalDialogState.showConfirmation(
+                            title = "Delete Plan",
+                            message = "Are you sure you want to delete this plan?",
+                            onConfirm = {
+                                viewModel.deletePlan(onSuccess = onBack)
+                            }
+                        )
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
+
             }
 
         }
@@ -123,12 +144,17 @@ fun WeeklyPlanDetailScreen(
             state.plan != null -> {
                 val plan = state.plan!!
                 val exercise = state.exercise
-
+                val imageModel = exercise?.imageUrl?.let { imageUrl ->
+                    if (imageUrl.startsWith("http", ignoreCase = true)) {
+                        imageUrl          // Remote URL
+                    } else {
+                        File(imageUrl)    // Local file path
+                    }
+                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp),
+                        .verticalScroll(rememberScrollState()) ,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
@@ -141,7 +167,7 @@ fun WeeklyPlanDetailScreen(
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             AsyncImage(
-                                model = File(exercise!!.imageUrl),
+                                model = imageModel,
                                 contentDescription = "Exercise Image",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
@@ -352,6 +378,14 @@ fun WeeklyPlanDetailScreen(
                 }
             }
         }
+    }
+
+    // Share Delegation Bottom Sheet
+    if (showShareBottomSheet && state.exercise != null) {
+        ShareDelegationBottomSheet(
+            exercise = state.exercise!!,
+            onDismissRequest = { showShareBottomSheet = false }
+        )
     }
 }
 

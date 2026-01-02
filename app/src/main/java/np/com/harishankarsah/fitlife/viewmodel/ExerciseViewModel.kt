@@ -27,6 +27,11 @@ class ExerciseViewModel : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
 
     init {
+        // Seed default exercises if needed
+        viewModelScope.launch {
+            repository.seedDefaultExercises()
+        }
+
         // Collect real-time updates and filter based on search query
         viewModelScope.launch {
             combine(
