@@ -1,8 +1,6 @@
 package np.com.harishankarsah.fitlife.ui.components
 
 import android.content.Context
-import android.telephony.SmsManager
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -17,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialogState
 import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
 import np.com.harishankarsah.fitlife.ui.utils.Size
+import np.com.harishankarsah.fitlife.utils.SmsDelegationHelper
 
 @Composable
 fun EquipmentDelegationCardSMS(
@@ -98,7 +97,7 @@ fun EquipmentDelegationCardSMS(
             // Send SMS Button
             GlobalButton(
                 onClick = {
-                    val sent = sendSmsDirect(
+                    val sent = sendSmsViaIntent(
                         context,
                         contactNumber,
                         equipmentList,
@@ -112,48 +111,48 @@ fun EquipmentDelegationCardSMS(
                         contactNumber = ""
                     }
                 },
-                text = "Send SMS"
+                text = "Open SMS App"
             )
         }
     }
 }
 
-// ✅ Updated Helper Function that returns Boolean
-private fun sendSmsDirect(
+/**
+ * Helper function that uses implicit intent to open SMS app
+ * No permissions required - opens default SMS app with pre-filled message
+ */
+private fun sendSmsViaIntent(
     context: Context,
     phoneNumber: String,
     equipmentList: List<String>,
     checkedStates: List<MutableState<Boolean>>,
     quantities: List<MutableState<String>>
-): Boolean { // Return true if success
-    if (phoneNumber.isBlank()) {
-        GlobalDialogState.showError("Please enter contact number")
-        return false
+): Boolean {
+    val selectedIndices = checkedStates.mapIndexedNotNull { index, state ->
+        if (state.value) index else null
     }
 
-    val selectedItems = equipmentList.mapIndexedNotNull { index, item ->
-        if (checkedStates[index].value) {
-            val qty = quantities[index].value.ifBlank { "1" }
-            "$item x $qty"
-        } else null
-    }
-
-    if (selectedItems.isEmpty()) {
+    if (selectedIndices.isEmpty()) {
         GlobalDialogState.showError("Select at least one equipment item")
         return false
     }
 
-    val message = "Equipment Delegation:\n" + selectedItems.joinToString("\n")
-
-    return try {
-        val smsManager = SmsManager.getDefault()
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-        GlobalDialogState.showSuccess("Message sent successfully!")
-        true
-    } catch (e: Exception) {
-        GlobalDialogState.showError("Failed to send SMS: ${e.message}")
-        false
+    val quantitiesMap = selectedIndices.associateWith { index ->
+        quantities[index].value.ifBlank { "1" }
     }
+
+    val message = SmsDelegationHelper.formatEquipmentMessage(
+        workoutName = "Delegated Equipment",
+        equipmentList = equipmentList,
+        selectedIndices = selectedIndices,
+        quantities = quantitiesMap
+    )
+
+    val success = SmsDelegationHelper.openSmsApp(context, phoneNumber, message)
+    if (success) {
+        GlobalDialogState.showSuccess("Opening SMS app...")
+    }
+    return success
 }
 
 

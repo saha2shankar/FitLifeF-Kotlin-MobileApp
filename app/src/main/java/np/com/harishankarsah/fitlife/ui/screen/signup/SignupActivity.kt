@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Observer
+import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialogState
 import np.com.harishankarsah.fitlife.ui.screen.forgot.ForgotActivity
 import np.com.harishankarsah.fitlife.ui.screen.login.LoginActivity
 import np.com.harishankarsah.fitlife.ui.theme.FitLifeTheme
@@ -40,23 +41,18 @@ class SignupActivity : ComponentActivity() {
         }
         authViewModel.authState.observe(this, Observer { state ->
             when (state) {
+
                 is AuthState.Authenticated -> {
-                    AlertDialog.Builder(this)
-                        .setTitle("Registration Successful")
-                        .setMessage("Your account has been created.")
-                        .setPositiveButton("Continue") { _, _ ->
-                            val intent = Intent(this, DashboardActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                        .show()
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    startActivity(intent)
+                    GlobalDialogState.showSuccess(
+                        "Your account has been created. 🎉"
+                    )
+
+                    finish()
                 }
                 is AuthState.Error -> {
-                    AlertDialog.Builder(this)
-                        .setTitle("Registration Failed")
-                        .setMessage(state.message)
-                        .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                        .show()
+                    GlobalDialogState.showError(state.message)
                 }
                 else -> {}
             }
@@ -66,4 +62,5 @@ class SignupActivity : ComponentActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
+
 }

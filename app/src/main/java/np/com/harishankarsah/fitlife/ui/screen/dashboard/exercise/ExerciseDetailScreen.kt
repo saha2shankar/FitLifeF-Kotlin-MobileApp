@@ -1,6 +1,8 @@
 package np.com.harishankarsah.fitlife.ui.screen.dashboard.exercise
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -10,9 +12,13 @@ import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Sms
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,6 +33,9 @@ import np.com.harishankarsah.fitlife.ui.components.EquipmentDelegationCardSMS
 import np.com.harishankarsah.fitlife.ui.components.GlobalButton
 import np.com.harishankarsah.fitlife.ui.components.GlobalTextButton
 import np.com.harishankarsah.fitlife.ui.components.TextButtonType
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationBottomSheet
+import np.com.harishankarsah.fitlife.ui.components.ShareDelegationType
+import np.com.harishankarsah.fitlife.utils.SmsDelegationHelper
 import np.com.harishankarsah.fitlife.ui.components.dialog.DialogField
 import np.com.harishankarsah.fitlife.ui.components.dialog.DialogType
 import np.com.harishankarsah.fitlife.ui.components.dialog.FieldType
@@ -35,6 +44,7 @@ import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialog
 import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalMultiFieldDialog
 import np.com.harishankarsah.fitlife.ui.components.location.GlobalMapView
 import np.com.harishankarsah.fitlife.ui.theme.Error
+import np.com.harishankarsah.fitlife.ui.theme.Info
 import np.com.harishankarsah.fitlife.ui.theme.OnAccent
 import np.com.harishankarsah.fitlife.ui.theme.OnBackground
 import np.com.harishankarsah.fitlife.ui.theme.Primary
@@ -51,10 +61,18 @@ fun ExerciseDetailScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+    var showShareBottomSheet by remember { mutableStateOf(false) }
 
     // Register Dialog Components
     GlobalDialog()
     GlobalMultiFieldDialog()
+
+    if (showShareBottomSheet && state.exercise != null) {
+        ShareDelegationBottomSheet(
+            exercise = state.exercise!!,
+            onDismissRequest = { showShareBottomSheet = false }
+        )
+    }
 
     LaunchedEffect(exerciseId) {
         viewModel.loadExercise(exerciseId)
@@ -83,7 +101,7 @@ fun ExerciseDetailScreen(
         containerColor = OnAccent,
         topBar = {
             TopAppBar(
-                title = { Text("Exercise Details") },
+                title = { Text("Workout Details") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -91,6 +109,9 @@ fun ExerciseDetailScreen(
                 },
                 actions = {
                     if (state.exercise != null) {
+                        IconButton(onClick = { showShareBottomSheet = true }) {
+                            Icon(Icons.Default.Sms, contentDescription = "Share / Delegate", tint = Info)
+                        }
                         IconButton(onClick = {
                             val intent = Intent(context, CreateExerciseActivity::class.java).apply {
                                 putExtra("exercise_data", Gson().toJson(state.exercise))
@@ -117,6 +138,15 @@ fun ExerciseDetailScreen(
             }
         } else if (state.exercise != null) {
             val exercise = state.exercise!!
+            val imageModel = exercise.imageUrl
+                ?.takeIf { it.isNotBlank() }
+                ?.let { url ->
+                    if (url.startsWith("http", ignoreCase = true)) {
+                        url            // Remote URL
+                    } else {
+                        File(url)      // Local file path
+                    }
+                }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -126,7 +156,7 @@ fun ExerciseDetailScreen(
                 // Image
                 if (exercise.imageUrl != null) {
                     AsyncImage(
-                        model = File(exercise.imageUrl), // Assuming local path
+                        model = imageModel,
                         contentDescription = "Exercise Image",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -203,12 +233,11 @@ fun ExerciseDetailScreen(
                         }
 
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
+//                        Spacer(modifier = Modifier.height(16.dp))
                         // Equipment Delegation Card
-                        EquipmentDelegationCardSMS(
-                            equipmentList = exercise.equipment
-                        )
+//                        EquipmentDelegationCardSMS(
+//                            equipmentList = exercise.equipment
+//                        )
                     }
 
 
@@ -261,6 +290,15 @@ fun ExerciseDetailScreen(
                             buttonType = ButtonType.OUTLINED
                         )
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    GlobalButton(
+                        text = "SMS Delegation",
+                        buttonType = ButtonType.PRIMARY,
+                        onClick = { showShareBottomSheet = true }
+
+                    )
+
+                    Spacer(modifier = Modifier.height(Size.xxl))
 
                 }
             }
@@ -273,6 +311,14 @@ fun ExerciseDetailScreen(
                 Text("Exercise not found")
             }
         }
+    }
+
+    // Share Delegation Bottom Sheet
+    if (showShareBottomSheet && state.exercise != null) {
+        ShareDelegationBottomSheet(
+            exercise = state.exercise!!,
+            onDismissRequest = { showShareBottomSheet = false }
+        )
     }
 }
 

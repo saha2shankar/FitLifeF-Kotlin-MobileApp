@@ -36,16 +36,17 @@ fun CreateExpenseDialog(
     onCreateExpense: (ExpenseModel) -> Unit
 ) {
     val expenseCategories = listOf(
-        "Food & Dining",
-        "Transportation",
-        "Shopping",
-        "Entertainment",
-        "Health & Fitness",
-        "Bills & Utilities",
-        "Education",
-        "Travel",
+        "Gym Membership",
+        "Personal Training",
+        "Workout Equipment",
+        "Fitness Classes",
+        "Supplements & Nutrition",
+        "Sports Apparel",
+        "Health Checkups",
+        "Fitness Apps",
         "Other"
     )
+
 
     var selectedCategory by remember { mutableStateOf("") }
     var amountText by remember { mutableStateOf("") }

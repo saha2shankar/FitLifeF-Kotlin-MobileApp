@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.auth.FirebaseAuth
 import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import np.com.harishankarsah.fitlife.ui.components.dialog.GlobalDialogState
 import np.com.harishankarsah.fitlife.ui.screen.login.LoginActivity
 import np.com.harishankarsah.fitlife.ui.theme.OnAccent
@@ -41,8 +43,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -56,6 +60,7 @@ import np.com.harishankarsah.fitlife.ui.screen.dashboard.week_plan.WeekPlanScree
 import np.com.harishankarsah.fitlife.ui.screen.dashboard.week_plan.WeeklyPlanDetailScreen
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import np.com.harishankarsah.fitlife.R
 import np.com.harishankarsah.fitlife.ui.screen.dashboard.expense.ExpenseActivity
 
 class DashboardActivity : ComponentActivity() {
@@ -101,12 +106,12 @@ fun MainScreen() {
                 TopAppBar(
                     navigationIcon = {
                         IconButton(onClick = { /* TODO */ }) {
-                            AsyncImage(
-                                model = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtrzwqNKIf5e7fILShRYoSD5EIa6nMheVTEQ&s",
+                            Image(
+                                painter = painterResource(id = R.drawable.profile),
                                 contentDescription = "Profile Image",
-                                contentScale = ContentScale.Crop, // ensures the image fills the circle
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .size(40.dp)          // profile size
+                                    .size(40.dp)
                                     .clip(CircleShape)
                             )
                         }
@@ -221,7 +226,20 @@ fun MainScreen() {
             }
 
             composable(Screen.Profile.rout) {
-                ProfileScreen()
+                ProfileScreen(
+                    onLogout = {
+                        GlobalDialogState.showConfirmation(
+                            title = "Logout",
+                            message = "Are you sure you want to logout?",
+                            confirmText = "Logout"
+                        ) {
+                            FirebaseAuth.getInstance().signOut()
+                            val intent = Intent(context, LoginActivity::class.java)
+                            context.startActivity(intent)
+                            (context as? android.app.Activity)?.finish()
+                        }
+                    }
+                )
             }
             
             composable(Screen.ExpenseTracking.rout) {
