@@ -179,7 +179,7 @@ Contributions are welcome!
 
 ## 📞 Support
 
-For support, email [sahharishankar11@example.com](mailto:sahharishankar11@gmail.com) or open an issue in the repository.
+For support, email [sahharishankar11@gmail.com](mailto:sahharishankar11@gmail.com) or open an issue in the repository.
 
 ---
 *Made with ❤️ and lots of love by Hari Shankar Sah*
